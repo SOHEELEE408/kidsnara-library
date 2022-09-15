@@ -29,7 +29,7 @@ public class HomeController {
         return "바코드가 등록되었습니다.";
     }
 
-    @GetMapping("/find")
+    @GetMapping("/members")
     public Member find(){
         Member member = memberService.findById(1L);
         return member;
