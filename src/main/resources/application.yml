@@ -1,0 +1,30 @@
+server:
+  port: 8082
+spring:
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        default_batch_fetch_size: 500
+        format_sql: true
+        show-sql: true
+  datasource:
+    primary:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://kidsnara.cqxj7hsqsoms.ap-northeast-2.rds.amazonaws.com/library?autoReconnect=true
+      username:
+      password:
+    secondary:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      jdbc-url: jdbc:mysql://kidsnara.cqxj7hsqsoms.ap-northeast-2.rds.amazonaws.com/library?autoReconnect=true
+      username:
+      password:
+logging:
+  level:
+    org.springframework.jdbc.datasource.SimpleDriverDataSource: DEBUG
+    org.hibernate.SQL: DEBUG
+
+
