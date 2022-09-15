@@ -44,7 +44,7 @@ jobs:
 
     ## create application.yml
     - name: make application.yml
-        if: contains(gitgub.ref, 'master')
+        ## if: contains(gitgub.ref, 'master')
         run: |
           cd ./src/main/resources
           touch ./application.yml
