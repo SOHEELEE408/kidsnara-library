@@ -1,20 +1,20 @@
 package com.kidsnara.library.domain.user;
 
-import com.kidsnara.library.domain.BaseTimeEntity;
+import com.kidsnara.library.domain.BaseEntity;
+import com.kidsnara.library.domain.library.Lend;
 import com.kidsnara.library.dto.UserCreateRequest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseTimeEntity {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -23,6 +23,9 @@ public class Member extends BaseTimeEntity {
 
     private String name;
     private String email;
+
+    @OneToMany(mappedBy = "member")
+    private List<Lend> lends = new ArrayList<>();
 
     public Member(UserCreateRequest request){
         this.name = request.getName();
