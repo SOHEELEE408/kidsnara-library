@@ -27,6 +27,11 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<Lend> lends = new ArrayList<>();
 
+    public void addLend(Lend lend) {
+        lend.setMember(this);
+        lends.add(lend);
+    }
+
     public Member(UserCreateRequest request){
         this.name = request.getName();
         this.email = request.getEmail();
