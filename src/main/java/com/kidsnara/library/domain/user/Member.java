@@ -1,7 +1,7 @@
 package com.kidsnara.library.domain.user;
 
 import com.kidsnara.library.domain.BaseEntity;
-import com.kidsnara.library.domain.library.Lend;
+import com.kidsnara.library.domain.library.Borrow;
 import com.kidsnara.library.dto.UserCreateRequest;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,11 +25,11 @@ public class Member extends BaseEntity {
     private String email;
 
     @OneToMany(mappedBy = "member")
-    private List<Lend> lends = new ArrayList<>();
+    private List<Borrow> borrows = new ArrayList<>();
 
-    public void addLend(Lend lend) {
-        lend.setMember(this);
-        lends.add(lend);
+    public void addLend(Borrow borrow) {
+        borrow.setMember(this);
+        borrows.add(borrow);
     }
 
     public Member(UserCreateRequest request){

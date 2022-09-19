@@ -49,6 +49,6 @@ public class Book extends BaseEntity {
     private LocalDateTime publishDate;
 
     @OneToMany(mappedBy = "book")
-    private List<Lend> lends = new ArrayList<>();
+    private List<Borrow> borrows = new ArrayList<>();
 
 }
