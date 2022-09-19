@@ -6,10 +6,10 @@ import com.kidsnara.library.domain.user.Member;
 import javax.persistence.*;
 
 @Entity
-public class Lend extends BaseEntity {
+public class Borrow extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "lend_id")
+    @Column(name = "borrow_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -22,7 +22,7 @@ public class Lend extends BaseEntity {
 
     public void changeBook(Book book){ // book이랑 lend 사이에 양방향을 해야할까?
         this.book = book;
-        book.getLends().add(this);
+        book.getBorrows().add(this);
     }
 
     public void setMember(Member member) {
