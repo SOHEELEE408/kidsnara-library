@@ -2,6 +2,7 @@ package com.kidsnara.library;
 
 import com.kidsnara.library.domain.user.Member;
 import com.kidsnara.library.domain.user.MemberService;
+import com.kidsnara.library.dto.MemberDto;
 import com.kidsnara.library.dto.UserCreateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +31,8 @@ public class HomeController {
     }
 
     @GetMapping("/members")
-    public Member find(){
-        Member member = memberService.findById(1L);
-        return member;
+    public MemberDto find(){
+        MemberDto memberDto = memberService.findById(1L);
+        return memberDto;
     }
 }

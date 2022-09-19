@@ -1,9 +1,12 @@
 package com.kidsnara.library.domain.user;
 
+import com.kidsnara.library.dto.MemberDto;
 import com.kidsnara.library.dto.UserCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.ManyToOne;
 
 
 @Service
@@ -21,9 +24,10 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public Member findById(Long userId){
+    public MemberDto findById(Long userId){
         Member member = userRepository.findById(userId).orElse(null);
-        return member;
+        MemberDto memberDto = new MemberDto(member.getName(), member.getEmail());
+        return memberDto;
     }
 
     public Long createAndGetUserCount(UserCreateRequest request){
