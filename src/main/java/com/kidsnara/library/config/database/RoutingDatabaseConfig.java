@@ -1,5 +1,6 @@
 package com.kidsnara.library.config.database;
 
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -35,14 +37,18 @@ public class RoutingDatabaseConfig {
     @Qualifier("primary")
     @ConfigurationProperties(prefix="spring.datasource.primary")
     public DataSource primaryDataSource(){
-        return DataSourceBuilder.create().type(HikariDataSource.class).build();
+        HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).build();
+
+        return dataSource;
     }
 
     @Bean
     @Qualifier("secondary")
     @ConfigurationProperties(prefix="spring.datasource.secondary")
     public DataSource secondaryDataSource(){
-        return DataSourceBuilder.create().type(HikariDataSource.class).build();
+        HikariDataSource dataSource = DataSourceBuilder.create().type(HikariDataSource.class).build();
+
+        return dataSource;
     }
 
     @DependsOn({"primaryDataSource", "secondaryDataSource"})
@@ -53,11 +59,7 @@ public class RoutingDatabaseConfig {
         dataSourceMap.put(DatabaseRole.PRIMARY, primary);
         dataSourceMap.put(DatabaseRole.SECONDARY, secondary);
 
-        RoutingDataSource routingDataSource = new RoutingDataSource();
-        routingDataSource.setTargetDataSources(dataSourceMap);
-        routingDataSource.setDefaultTargetDataSource(primary);
-
-        return routingDataSource;
+        return new RoutingDataSource(dataSourceMap);
     }
 
     @DependsOn({"routeDataSource"})
