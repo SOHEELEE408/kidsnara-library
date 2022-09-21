@@ -29,5 +29,5 @@ public class BaseEntity {
     private String createdBy;
 
     @LastModifiedBy
-    private String lasteModifiedBy;
+    private String lastedModifiedBy;
 }
