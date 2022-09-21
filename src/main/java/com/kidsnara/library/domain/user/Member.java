@@ -24,14 +24,6 @@ public class Member extends BaseEntity {
     private String name;
     private String email;
 
-    @OneToMany(mappedBy = "member")
-    private List<Borrow> borrows = new ArrayList<>();
-
-    public void addLend(Borrow borrow) {
-        borrow.setMember(this);
-        borrows.add(borrow);
-    }
-
     public Member(UserCreateRequest request){
         this.name = request.getName();
         this.email = request.getEmail();

@@ -48,7 +48,4 @@ public class Book extends BaseEntity {
     @Column(name = "pub_date_2")
     private LocalDateTime publishDate;
 
-    @OneToMany(mappedBy = "book")
-    private List<Borrow> borrows = new ArrayList<>();
-
 }
