@@ -1,3 +1,4 @@
+/*
 package com.kidsnara.library;
 
 import com.kidsnara.library.domain.user.Member;
@@ -36,3 +37,4 @@ public class HomeController {
         return memberDto;
     }
 }
+*/
