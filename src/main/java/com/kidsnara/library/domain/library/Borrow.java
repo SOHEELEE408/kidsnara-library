@@ -1,7 +1,7 @@
 package com.kidsnara.library.domain.library;
 
 import com.kidsnara.library.domain.BaseEntity;
-import com.kidsnara.library.domain.user.Member;
+import com.kidsnara.library.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,13 +19,13 @@ public class Borrow extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
 
-    public void setMember(Member member) {
-        this.member = member;
+    public void setUser(User user) {
+        this.user = user;
     }
 }
