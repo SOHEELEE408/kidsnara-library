@@ -2,6 +2,7 @@ package com.kidsnara.library.domain.library;
 
 import com.kidsnara.library.domain.BaseEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,20 +31,39 @@ public class Book extends BaseEntity {
     @Column(length = 1000)
     private String publisher;
 
-    @Column(columnDefinition = "text", name = "img_url")
-    private String imgUrl;
+    private int price;
 
-    @Column(length = 20)
-    private String price;
-
+    @Column(columnDefinition = "int default 1")
     private int count;
 
     @Column(name = "possible_cnt")
     private int possibleCnt;
 
+    @Column(columnDefinition = "varchar(20) default 'registered'")
     private String status;
 
-    @Column(name = "pub_date_2")
-    private LocalDateTime publishDate;
+    private String genre;
 
+    @Builder
+    public Book(Long id, String isbn, String title, String author, String publisher, int price, int count, String genre){
+        this.id = id;
+        this.isbn = isbn;
+        this.title = title;
+        this.author = author;
+        this.publisher = publisher;
+        this.price = price;
+        this.count = count;
+        this.genre = genre;
+    }
+
+    @Builder
+    public Book(String isbn, String title, String author, String publisher, int price, int count, String genre){
+        this.isbn = isbn;
+        this.title = title;
+        this.author = author;
+        this.publisher = publisher;
+        this.price = price;
+        this.count = count;
+        this.genre = genre;
+    }
 }
