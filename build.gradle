@@ -34,7 +34,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'com.h2database:h2'
+    testImplementation 'com.h2database:h2:1.4.200'
+    implementation 'com.google.code.gson:gson:2.9.0'
 }
 
 tasks.named('test') {
