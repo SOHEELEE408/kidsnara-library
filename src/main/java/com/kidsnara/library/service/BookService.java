@@ -1,11 +1,15 @@
 package com.kidsnara.library.service;
 
-import com.kidsnara.library.config.response.BookErrorResult;
-import com.kidsnara.library.config.response.BookException;
+import com.kidsnara.library.config.exceptionhandler.BaseErrorResult;
+import com.kidsnara.library.config.exceptionhandler.BaseException;
 import com.kidsnara.library.domain.library.Book;
-import com.kidsnara.library.dto.book.BookRes;
+import com.kidsnara.library.dto.book.BookGetRes;
+import com.kidsnara.library.dto.book.BookRegisterRes;
 import com.kidsnara.library.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,17 +21,27 @@ public class BookService {
 
     private final BookRepository repository;
 
-    public BookRes saveBook(Book book) {
+    @Transactional
+    public BookRegisterRes saveBook(Book book) {
         final Book result = repository.findByIsbn(book.getIsbn());
         if(result != null){
-            throw new BookException(BookErrorResult.DUPLICATED_BOOK_REGISTER);
+            throw new BaseException(BaseErrorResult.DUPLICATED_BOOK_REGISTER);
         }
 
         final Book savedBook = repository.save(book);
 
-        return BookRes.builder()
+        return BookRegisterRes.builder()
                 .bookId(savedBook.getId())
                 .title(savedBook.getTitle())
                 .build();
     }
+
+    public Slice<BookGetRes> getBookList(int page){
+        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "title"));
+        Slice<BookGetRes> bookGetRes = repository.findBookGetRes(pageRequest);
+
+        return bookGetRes;
+    }
+
+
 }

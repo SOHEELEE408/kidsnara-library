@@ -1,10 +1,12 @@
 package com.kidsnara.library.controller;
 
 import com.kidsnara.library.domain.library.Book;
+import com.kidsnara.library.dto.book.BookGetRes;
 import com.kidsnara.library.dto.book.BookRegisterReq;
-import com.kidsnara.library.dto.book.BookRes;
+import com.kidsnara.library.dto.book.BookRegisterRes;
 import com.kidsnara.library.service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +29,10 @@ public class BookController {
     }*/
 
     @PostMapping
-    public ResponseEntity<BookRes> saveBook(
+    public ResponseEntity<BookRegisterRes> saveBook(
             @RequestHeader(ACCESS_TOKEN) final String token,
             @RequestBody @Valid final BookRegisterReq bookReq) {
 
-        // bookReq -> book 엔티티로
         Book book = Book.builder()
                 .isbn(bookReq.getIsbn())
                 .title(bookReq.getTitle())
@@ -42,9 +43,17 @@ public class BookController {
                 .genre(bookReq.getGenre())
                 .build();
 
-        BookRes bookRes = bookService.saveBook(book);
+        BookRegisterRes bookRegisterRes = bookService.saveBook(book);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(bookRes);
+                .body(bookRegisterRes);
+    }
+
+    @GetMapping
+    public ResponseEntity<Slice<BookGetRes>> getBookList(
+            @RequestHeader(ACCESS_TOKEN) final String token,
+            @RequestParam(name = "page", defaultValue = "0") final int page
+    ){
+        return ResponseEntity.ok(bookService.getBookList(page));
     }
 }
