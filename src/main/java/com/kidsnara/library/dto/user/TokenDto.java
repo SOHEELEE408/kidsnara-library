@@ -1,4 +1,4 @@
-package com.kidsnara.library.dto;
+package com.kidsnara.library.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

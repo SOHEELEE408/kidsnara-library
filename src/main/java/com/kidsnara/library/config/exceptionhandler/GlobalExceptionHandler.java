@@ -1,4 +1,4 @@
-package com.kidsnara.library.config.response;
+package com.kidsnara.library.config.exceptionhandler;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -40,11 +40,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> makeErrorResponseEntity(final String errorDescription){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), errorDescription));
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), 2003, errorDescription));
     }
 
-    @ExceptionHandler({BookException.class})
-    public ResponseEntity<ErrorResponse> handleRestApiException(final BookException exception){
+    @ExceptionHandler({BaseException.class})
+    public ResponseEntity<ErrorResponse> handleRestApiException(final BaseException exception){
         log.warn("BookException occur : ", exception);
         return this.makeErrorResponseEntity(exception.getErrorResult());
     }
@@ -52,18 +52,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorResponse> handleException(final Exception exception){
         log.warn("Exception occur : ", exception);
-        return this.makeErrorResponseEntity(BookErrorResult.UNKNOWN_EXCEPTION);
+        return this.makeErrorResponseEntity(BaseErrorResult.UNKNOWN_EXCEPTION);
     }
 
-    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final BookErrorResult errorResult){
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final BaseErrorResult errorResult){
         return ResponseEntity.status(errorResult.getHttpStatus())
-                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+                .body(new ErrorResponse(errorResult.getHttpStatus().toString(), errorResult.getCode(), errorResult.getMessage()));
     }
+
 
     @Getter
     @RequiredArgsConstructor
     static class ErrorResponse{
-        private final String code;
+        private final String name;
+        private final int code;
         private final String message;
     }
 }

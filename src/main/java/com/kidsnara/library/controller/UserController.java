@@ -2,7 +2,7 @@ package com.kidsnara.library.controller;
 
 import com.kidsnara.library.domain.user.User;
 import com.kidsnara.library.domain.user.UserServiceImpl;
-import com.kidsnara.library.dto.UserJoinRequest;
+import com.kidsnara.library.dto.user.UserJoinRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserServiceImpl userService;

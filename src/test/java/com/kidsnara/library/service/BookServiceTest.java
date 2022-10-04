@@ -1,9 +1,8 @@
 package com.kidsnara.library.service;
 
-import com.kidsnara.library.config.response.BookErrorResult;
-import com.kidsnara.library.config.response.BookException;
+import com.kidsnara.library.config.exceptionhandler.BaseErrorResult;
+import com.kidsnara.library.config.exceptionhandler.BaseException;
 import com.kidsnara.library.domain.library.Book;
-import com.kidsnara.library.dto.book.BookRegisterReq;
 import com.kidsnara.library.dto.book.BookRes;
 import com.kidsnara.library.repository.BookRepository;
 import org.junit.jupiter.api.Test;
@@ -36,10 +35,10 @@ class BookServiceTest {
         doReturn(Book.builder().build()).when(repository).findByIsbn(isbn);
 
         // when
-        final BookException result = assertThrows(BookException.class, () -> bookService.saveBook(book()));
+        final BaseException result = assertThrows(BaseException.class, () -> bookService.saveBook(book()));
 
         // then
-        assertThat(result.getErrorResult()).isEqualTo(BookErrorResult.DUPLICATED_BOOK_REGISTER);
+        assertThat(result.getErrorResult()).isEqualTo(BaseErrorResult.DUPLICATED_BOOK_REGISTER);
     }
 
 

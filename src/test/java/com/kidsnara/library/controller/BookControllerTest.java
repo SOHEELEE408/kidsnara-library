@@ -1,9 +1,9 @@
 package com.kidsnara.library.controller;
 
 import com.google.gson.Gson;
-import com.kidsnara.library.config.response.BookErrorResult;
-import com.kidsnara.library.config.response.BookException;
-import com.kidsnara.library.config.response.GlobalExceptionHandler;
+import com.kidsnara.library.config.exceptionhandler.BaseErrorResult;
+import com.kidsnara.library.config.exceptionhandler.BaseException;
+import com.kidsnara.library.config.exceptionhandler.GlobalExceptionHandler;
 import com.kidsnara.library.domain.library.Book;
 import com.kidsnara.library.dto.book.BookRegisterReq;
 import com.kidsnara.library.dto.book.BookRes;
@@ -159,7 +159,7 @@ class BookControllerTest {
     void 책등록실패_bookService에서에러Throw() throws Exception {
         // given
         final String url = "/books";
-        doThrow(new BookException(BookErrorResult.DUPLICATED_BOOK_REGISTER))
+        doThrow(new BaseException(BaseErrorResult.DUPLICATED_BOOK_REGISTER))
                 .when(bookService)
                 .saveBook(any(Book.class));
 
