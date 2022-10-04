@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class BookRes {
+public class BookRegisterRes {
 
     private Long bookId;
     private String title;
