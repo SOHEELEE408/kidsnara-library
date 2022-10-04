@@ -1,10 +1,14 @@
 package com.kidsnara.library.repository;
 
 import com.kidsnara.library.domain.library.Book;
+import com.kidsnara.library.dto.book.BookGetRes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,5 +65,43 @@ public class BookRepositoryTest {
                 .count(1)
                 .genre("문학")
                 .build();
+    }
+
+    @Test
+    void 도서조회_사이즈가_0() {
+        // given
+        PageRequest pageRequest = PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "title"));
+
+        // when
+        Slice<BookGetRes> result = bookRepository.findBookGetRes(pageRequest);
+        
+        // then
+        assertThat(result.getNumberOfElements()).isEqualTo(0);
+    }
+
+    @Test
+    void 도서조희_사이즈가_2() {
+        // given
+        final Book book1 = book();
+        final Book book2 = Book.builder()
+                .isbn("8888")
+                .title("책 이름")
+                .author("작가명")
+                .publisher("출판사")
+                .price(10000)
+                .count(1)
+                .genre("문학")
+                .build();
+
+        bookRepository.save(book1);
+        bookRepository.save(book2);
+
+        PageRequest pageRequest = PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "title"));
+
+        // when
+        Slice<BookGetRes> result = bookRepository.findBookGetRes(pageRequest);
+
+        // then
+        assertThat(result.getNumberOfElements()).isEqualTo(2);
     }
 }

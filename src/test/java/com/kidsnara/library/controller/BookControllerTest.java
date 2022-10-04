@@ -1,12 +1,15 @@
 package com.kidsnara.library.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.Gson;
 import com.kidsnara.library.config.exceptionhandler.BaseErrorResult;
 import com.kidsnara.library.config.exceptionhandler.BaseException;
 import com.kidsnara.library.config.exceptionhandler.GlobalExceptionHandler;
 import com.kidsnara.library.domain.library.Book;
+import com.kidsnara.library.dto.book.BookGetRes;
 import com.kidsnara.library.dto.book.BookRegisterReq;
-import com.kidsnara.library.dto.book.BookRes;
+import com.kidsnara.library.dto.book.BookRegisterRes;
+import com.kidsnara.library.repository.BookRepository;
 import com.kidsnara.library.service.BookService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +19,12 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -25,6 +33,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.kidsnara.library.constant.BookConstants.ACCESS_TOKEN;
@@ -39,6 +52,9 @@ class BookControllerTest {
 
     @Mock
     private BookService bookService;
+
+    @Spy
+    private BookRepository bookRepository;
 
     @InjectMocks
     private BookController bookController;
@@ -198,11 +214,11 @@ class BookControllerTest {
     void 책등록성공() throws Exception {
         // given
         final String url = "/books";
-        final BookRes bookRes = BookRes.builder()
+        final BookRegisterRes bookRegisterRes = BookRegisterRes.builder()
                 .bookId(-1L)
                 .title("책 이름")
                 .build();
-        doReturn(bookRes).when(bookService).saveBook(any(Book.class));
+        doReturn(bookRegisterRes).when(bookService).saveBook(any(Book.class));
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -215,9 +231,9 @@ class BookControllerTest {
         // then
         resultActions.andExpect(status().isCreated());
 
-        BookRes response = gson.fromJson(resultActions.andReturn()
+        BookRegisterRes response = gson.fromJson(resultActions.andReturn()
                 .getResponse()
-                .getContentAsString(StandardCharsets.UTF_8), BookRes.class);
+                .getContentAsString(StandardCharsets.UTF_8), BookRegisterRes.class);
 
         assertThat(response.getTitle()).isEqualTo("책 이름");
         assertThat(response.getBookId()).isNotZero();
@@ -245,4 +261,39 @@ class BookControllerTest {
                 Arguments.of("9999", "책 이름", "작가명", "출판사", 10000, 1, null)
         );
     }
+
+    @Test
+    void 도서목록전체조회실패_토큰이헤더에없음() throws Exception {
+        // given
+        final String url = "/books";
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .param("page", "0")
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 도서목록전체조회성공() throws Exception {
+        // given
+        final String url = "/books";
+        Slice<BookGetRes> bookGetRes = bookRepository.findBookGetRes(PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "title")));
+        doReturn(bookGetRes).when(bookService).getBookList(0);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .header(ACCESS_TOKEN, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJVU0VSX0VNQUlMIjoidGVzdEBlbWFpbC5jb20iLCJpc3MiOiJraWRzbmFyYSIsIlVTRVJfUk9MRSI6IlJPTEVfVVNFUiIsImV4cCI6MTY2NDg3NjY0NX0.xuKp64S2Yk02NhFtq_YeBS2cp9Lmf_BlhIQT-SjOBcI")
+                        .param("page", "0")
+        );
+
+        // then
+        resultActions.andExpect(status().isOk());
+    }
+
+
 }
