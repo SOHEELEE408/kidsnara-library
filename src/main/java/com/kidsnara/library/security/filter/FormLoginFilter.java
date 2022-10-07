@@ -1,7 +1,7 @@
 package com.kidsnara.library.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kidsnara.library.dto.LogInRequest;
+import com.kidsnara.library.dto.user.LogInRequest;
 import com.kidsnara.library.security.token.PreAuthorizationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;

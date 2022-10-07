@@ -1,7 +1,7 @@
 package com.kidsnara.library.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kidsnara.library.dto.TokenDto;
+import com.kidsnara.library.dto.user.TokenDto;
 import com.kidsnara.library.security.CustomUserDetails;
 import com.kidsnara.library.security.jwt.JwtFactory;
 import com.kidsnara.library.security.token.PostAuthorizationToken;

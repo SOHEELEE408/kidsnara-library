@@ -1,6 +1,6 @@
 package com.kidsnara.library.security.token;
 
-import com.kidsnara.library.dto.LogInRequest;
+import com.kidsnara.library.dto.user.LogInRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 /**

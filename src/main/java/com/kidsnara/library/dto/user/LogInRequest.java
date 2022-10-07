@@ -18,7 +18,7 @@ public class LogInRequest {
     @NotBlank(message = "비밀번호를 입력해주세요.")
     private String password;
 
-    private final Role role = Role.USER;
+    private final Role role = Role.ADMIN;
 
     public User toEntity() {
         return User.builder()
