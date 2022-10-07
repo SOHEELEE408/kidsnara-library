@@ -6,6 +6,7 @@ import com.kidsnara.library.config.exceptionhandler.BaseErrorResult;
 import com.kidsnara.library.config.exceptionhandler.BaseException;
 import com.kidsnara.library.config.exceptionhandler.GlobalExceptionHandler;
 import com.kidsnara.library.domain.library.Book;
+import com.kidsnara.library.dto.book.BookDetailRes;
 import com.kidsnara.library.dto.book.BookGetRes;
 import com.kidsnara.library.dto.book.BookRegisterReq;
 import com.kidsnara.library.dto.book.BookRegisterRes;
@@ -295,5 +296,54 @@ class BookControllerTest {
         resultActions.andExpect(status().isOk());
     }
 
+    @Test
+    void 도서상세조회실패_토큰이헤더에없음() throws Exception{
+        // given
+        final String url = "/books/-1";
 
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 도서상세조회실패_존재하지않음() throws Exception {
+        // given
+        final String url = "/books/-1";
+        doThrow(new BaseException(BaseErrorResult.BOOK_NOT_FOUND))
+                .when(bookService)
+                .getBook(-1L);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .header(ACCESS_TOKEN, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJVU0VSX0VNQUlMIjoidGVzdEBlbWFpbC5jb20iLCJpc3MiOiJraWRzbmFyYSIsIlVTRVJfUk9MRSI6IlJPTEVfVVNFUiIsImV4cCI6MTY2NDg3NjY0NX0.xuKp64S2Yk02NhFtq_YeBS2cp9Lmf_BlhIQT-SjOBcI")
+        );
+
+        // then
+        resultActions.andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    void 도서상세조회성공() throws Exception {
+        // given
+        final String url = "/books/-1";
+        doReturn(BookDetailRes.builder().build())
+                .when(bookService).getBook( -1L);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .header(ACCESS_TOKEN, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJVU0VSX0VNQUlMIjoidGVzdEBlbWFpbC5jb20iLCJpc3MiOiJraWRzbmFyYSIsIlVTRVJfUk9MRSI6IlJPTEVfVVNFUiIsImV4cCI6MTY2NDg3NjY0NX0.xuKp64S2Yk02NhFtq_YeBS2cp9Lmf_BlhIQT-SjOBcI")
+        );
+
+        // then
+        resultActions.andExpect(status().isOk());
+
+    }
 }

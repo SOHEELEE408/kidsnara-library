@@ -3,6 +3,7 @@ package com.kidsnara.library.service;
 import com.kidsnara.library.config.exceptionhandler.BaseErrorResult;
 import com.kidsnara.library.config.exceptionhandler.BaseException;
 import com.kidsnara.library.domain.library.Book;
+import com.kidsnara.library.dto.book.BookDetailRes;
 import com.kidsnara.library.dto.book.BookGetRes;
 import com.kidsnara.library.dto.book.BookRegisterRes;
 import com.kidsnara.library.repository.BookRepository;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +40,7 @@ class BookServiceTest {
     BookService bookService;
 
     private final String isbn = "9999";
+    private final Long id = -1L;
 
     @Test
     void 도서등록실패_이미존재() {
@@ -73,7 +76,7 @@ class BookServiceTest {
 
     private Book book() {
         return Book.builder()
-                .id(-1L)
+                .id(id)
                 .isbn(isbn)
                 .title("책 이름")
                 .author("작가명")
@@ -174,5 +177,29 @@ class BookServiceTest {
                 return null;
             }
         };
+    }
+
+    @Test
+    void 도서상세조회실패_존재하지않음() {
+        // given
+        doReturn(Optional.empty()).when(repository).findById(id);
+
+        // when
+        final BaseException result = assertThrows(BaseException.class, ()-> bookService.getBook(id));
+
+        // then
+        assertThat(result.getErrorResult()).isEqualTo(BaseErrorResult.BOOK_NOT_FOUND);
+    }
+
+    @Test
+    void 도서상세조회성공(){
+        // given
+        doReturn(Optional.of(book())).when(repository).findById(id);
+
+        // when
+        final BookDetailRes result = bookService.getBook(id);
+
+        // then
+        assertThat(result.getTitle()).isEqualTo("책 이름");
     }
 }
