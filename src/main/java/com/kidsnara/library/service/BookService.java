@@ -3,6 +3,7 @@ package com.kidsnara.library.service;
 import com.kidsnara.library.config.exceptionhandler.BaseErrorResult;
 import com.kidsnara.library.config.exceptionhandler.BaseException;
 import com.kidsnara.library.domain.library.Book;
+import com.kidsnara.library.dto.book.BookDetailRes;
 import com.kidsnara.library.dto.book.BookGetRes;
 import com.kidsnara.library.dto.book.BookRegisterRes;
 import com.kidsnara.library.repository.BookRepository;
@@ -44,4 +45,18 @@ public class BookService {
     }
 
 
+    public BookDetailRes getBook(Long bookId) {
+        Book book = repository.findById(bookId).orElseThrow(() -> new BaseException(BaseErrorResult.BOOK_NOT_FOUND));
+
+        return BookDetailRes.builder()
+                .isbn(book.getIsbn())
+                .title(book.getTitle())
+                .author(book.getAuthor())
+                .publisher(book.getPublisher())
+                .price(book.getPrice())
+                .count(book.getCount())
+                .count(book.getPossibleCnt())
+                .genre(book.getGenre())
+                .build();
+    }
 }

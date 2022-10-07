@@ -1,6 +1,7 @@
 package com.kidsnara.library.controller;
 
 import com.kidsnara.library.domain.library.Book;
+import com.kidsnara.library.dto.book.BookDetailRes;
 import com.kidsnara.library.dto.book.BookGetRes;
 import com.kidsnara.library.dto.book.BookRegisterReq;
 import com.kidsnara.library.dto.book.BookRegisterRes;
@@ -55,5 +56,13 @@ public class BookController {
             @RequestParam(name = "page", defaultValue = "0") final int page
     ){
         return ResponseEntity.ok(bookService.getBookList(page));
+    }
+
+    @GetMapping("/{bookId}")
+    public ResponseEntity<BookDetailRes> getBook(
+            @RequestHeader(ACCESS_TOKEN) final String token,
+            @PathVariable final Long bookId
+    ){
+        return ResponseEntity.ok(bookService.getBook(bookId));
     }
 }
