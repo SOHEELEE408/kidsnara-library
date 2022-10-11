@@ -1,6 +1,6 @@
 package com.kidsnara.library.security.provider;
 
-import com.kidsnara.library.domain.user.UserServiceImpl;
+import com.kidsnara.library.service.UserServiceImpl;
 import com.kidsnara.library.security.CustomUserDetails;
 import com.kidsnara.library.security.token.PostAuthorizationToken;
 import com.kidsnara.library.security.token.PreAuthorizationToken;
