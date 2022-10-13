@@ -1,28 +1,16 @@
 <template>
     <component :is="currentMenu" :right="side === 'right' ? true: false">
-      <a href="#">
+      <a href="/login">
         <i class="fa fa-fw fa-star-o"></i>
-        <span>Favourites</span>
+        <span>Login</span>
       </a>
-      <a href="#">
+      <a href="/books">
         <i class="fa fa-fw fa-bell-o"></i>
-        <span>Alerts</span>
+        <span>도서 목록</span>
       </a>
-      <a href="#">
+      <a href="/books/register/barcode">
         <i class="fa fa-fw fa-envelope-o"></i>
-        <span>Messages</span>
-      </a>
-      <a href="#">
-        <i class="fa fa-fw fa-comment-o"></i>
-        <span>Comments</span>
-      </a>
-      <a href="#">
-        <i class="fa fa-fw fa-bar-chart-o"></i>
-        <span>Analytics</span>
-      </a>
-      <a href="#">
-        <i class="fa fa-fw fa-newspaper-o"></i>
-        <span>Reading</span>
+        <span>도서 등록</span>
       </a>
     </component>
     <Header/>
