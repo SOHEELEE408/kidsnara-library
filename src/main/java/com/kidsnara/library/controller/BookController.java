@@ -1,10 +1,17 @@
 package com.kidsnara.library.controller;
 
+import com.kidsnara.library.config.exceptionhandler.BaseErrorResult;
+import com.kidsnara.library.config.exceptionhandler.BaseException;
+import com.kidsnara.library.config.naver.NaverClient;
 import com.kidsnara.library.domain.library.Book;
 import com.kidsnara.library.dto.book.BookDetailRes;
 import com.kidsnara.library.dto.book.BookGetRes;
 import com.kidsnara.library.dto.book.BookRegisterReq;
 import com.kidsnara.library.dto.book.BookRegisterRes;
+import com.kidsnara.library.dto.naver.SearchBookReq;
+import com.kidsnara.library.dto.naver.SearchBookRes;
+import com.kidsnara.library.dto.user.AccountDto;
+import com.kidsnara.library.security.jwt.JwtDecoder;
 import com.kidsnara.library.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
@@ -22,12 +29,16 @@ import static com.kidsnara.library.constant.BookConstants.ACCESS_TOKEN;
 public class BookController {
 
     private final BookService bookService;
+    private final JwtDecoder jwtDecoder;
+    private final NaverClient naverClient;
 
-    /*@GetMapping("/isbn")
-    public ResponseEntity<BookDataRes> checkIsbn(@RequestParam("isbn") String isbn) throws BaseException {
-        BookDataRes bookData = bookService.findBookData(isbn);
-        return new ResponseEntity<>(bookData, HttpStatus.OK);
-    }*/
+    @GetMapping("/search")
+    public ResponseEntity<SearchBookRes> searchBookfromNaver(
+            @RequestParam("isbn") String isbn) {
+        SearchBookReq searchBookReq = new SearchBookReq();
+        searchBookReq.setQuery(isbn);
+        return ResponseEntity.ok(naverClient.bookSearch(searchBookReq));
+    }
 
     @PostMapping
     public ResponseEntity<BookRegisterRes> saveBook(
@@ -64,5 +75,19 @@ public class BookController {
             @PathVariable final Long bookId
     ){
         return ResponseEntity.ok(bookService.getBook(bookId));
+    }
+
+    @DeleteMapping("/{bookId}")
+    public ResponseEntity<Void> deleteBook(
+            @RequestHeader(ACCESS_TOKEN) final String token,
+            @PathVariable final Long bookId
+    ){
+        AccountDto accountDto = jwtDecoder.decodeJwt(token);
+        if(!accountDto.getRole().equals("ROLE_ADMIN")){
+            throw new BaseException(BaseErrorResult.NO_PERMISSION);
+        }
+
+        bookService.deleteBook(bookId);
+        return ResponseEntity.noContent().build();
     }
 }
