@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import Menu from '@/components/Menu';
+import Menu from '@/components/layout/Menu';
 export default {
   name: 'slide',
   components: {
