@@ -23,6 +23,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -63,7 +65,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers()
                 .frameOptions()
                 .disable();
-
         http
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -89,6 +90,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/books"
                 )
                 .hasRole("USER");
+        http
+                .cors(withDefaults());
     }
 
     private JwtAuthenticationFilter jwtFilter() throws Exception{
