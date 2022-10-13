@@ -115,11 +115,10 @@
 </template>
 
 <script>
-import CameraScanner from "@/components/layout/CameraScanner";
 
 export default {
   name: "PostsReg",
-  components: {CameraScanner},
+  components: {},
   data(){
     return{
       disabled:true,

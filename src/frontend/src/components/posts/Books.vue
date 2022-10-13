@@ -7,10 +7,10 @@
                :getData="getPosts"
                :id="LibraryTable">
           <template v-slot:header>
-            <th>#</th>
-            <th>제목</th>
-            <th>작성자</th>
-            <th>작성일</th>
+            <th>Vol.</th>
+            <th>도서명</th>
+            <th>작가</th>
+            <th>대여</th>
             <th class="text-center">비고</th>
           </template>
           <template v-slot:default="slotProps">
@@ -30,7 +30,6 @@
           </template>
         </LibraryTable>
       </div>
-      <CameraScanner />
     </div>
 
     <div class="row mt-3 float-right">
@@ -46,12 +45,11 @@
 </template>
 
 <script>
-import LibraryTable from "@/components/layout/LibraryTable";
-import CameraScanner from "../layout/CameraScanner";
+import LibraryTable from "@/components/layout/BookTable";
 
 export default {
-  name: "KidsnaraBooks",
-  components:{LibraryTable, CameraScanner},
+  name: "Books",
+  components:{LibraryTable},
   data(){
     return{
       posts:[],
@@ -76,7 +74,7 @@ export default {
       this.getPosts(params)
     },
     getPosts(params){
-      this.axios.get("http://localhost:9000/api/v1?"+params)  // 게시글: this.axios.get("http://127.0.0.1:8080/posts?" + params)
+      this.axios.get("http://localhost:8081/books?"+params)  // 게시글: this.axios.get("http://127.0.0.1:8080/posts?" + params)
       .then(res=>{
         this.posts=res.data.content
         this.cnt=res.data.totalElements
