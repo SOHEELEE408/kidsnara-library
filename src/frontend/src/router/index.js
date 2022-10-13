@@ -2,35 +2,37 @@ import {createWebHistory, createRouter} from "vue-router";
 
 const routes = [
     {
-        path: '/hello',
-        name: 'Hello',
-        component: () => import('@/components/HelloWorld'), // 동적 import
+        path: '/login',
+        name: 'Login',
+        component: () => import('@/views/Login'), // 동적 import
     },
     {
         path: '/',
-        redirect: '/posts',
+        redirect: '/books',
         name: 'TheContainer',
-        component: () => import('@/components/layout/TheContainer'),
+        component: () => import('@/views/TheContainer'),
         children: [
             {
-                path: '/posts',
-                name: 'KidsnaraBooks',
-                component: () => import('@/components/posts/KidsnaraBooks'),
+                path: '/books',
+                name: 'Books', // 만들어지는 js 파일명
+                component: () => import('@/components/posts/Books'),
             },
             {
-                path: '/posts/detail',
-                name: 'PostsDetail',
-                component: () => import('@/components/posts/PostsDetail'),
+                path: '/books/detail',
+                name: 'BookDetail',
+                component: () => import('@/components/posts/BookDetail'),
             },
             {
-                path: '/posts/reg',
-                name: 'PostsReg',
-                component: () => import('@/components/posts/PostsReg')
+                path: '/books/regist',
+                name: 'BookReg',
+                component: () => import(
+                    /* webpackChunkName: "bookregist" */ '@/components/posts/BookReg')
             },
             {
-                path: '/barcode',
+                path: '/books/regist/barcode',
                 name: 'BarcodeScanner',
-                component: () => import('@/components/posts/BarcodeScanner'),
+                component: () => import(
+                    /* webpackChunkName: "bookregist" */ '@/components/posts/BarcodeScanner'),
             }
         ]
     }
