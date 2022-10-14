@@ -1,5 +1,7 @@
-package com.kidsnara.library.domain.user;
+package com.kidsnara.library.service;
 
+import com.kidsnara.library.domain.user.User;
+import com.kidsnara.library.dto.user.UserJoinResponse;
 import com.kidsnara.library.security.CustomUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,5 +12,5 @@ public interface UserService extends UserDetailsService {
     @Override
     CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
-    User saveOrUpdateUser(User user);
+    UserJoinResponse saveOrUpdateUser(User user);
 }

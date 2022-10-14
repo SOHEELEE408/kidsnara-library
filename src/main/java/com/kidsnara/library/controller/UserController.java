@@ -1,7 +1,8 @@
 package com.kidsnara.library.controller;
 
 import com.kidsnara.library.domain.user.User;
-import com.kidsnara.library.domain.user.UserServiceImpl;
+import com.kidsnara.library.dto.user.UserJoinResponse;
+import com.kidsnara.library.service.UserServiceImpl;
 import com.kidsnara.library.dto.user.UserJoinRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,12 +23,9 @@ public class UserController {
     private final UserServiceImpl userService;
 
     @PostMapping("/join")
-    public ResponseEntity<?> join(@Valid @RequestBody UserJoinRequest dto, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<UserJoinResponse> join(@Valid @RequestBody UserJoinRequest dto){
 
-        User user = userService.saveOrUpdateUser(dto.toEntity());
+        UserJoinResponse user = userService.saveOrUpdateUser(dto.toEntity());
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }

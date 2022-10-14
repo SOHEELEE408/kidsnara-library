@@ -1,15 +1,16 @@
-package com.kidsnara.library.domain.user;
+package com.kidsnara.library.service;
 
-import com.kidsnara.library.constant.Role;
+import com.kidsnara.library.config.exceptionhandler.BaseErrorResult;
+import com.kidsnara.library.config.exceptionhandler.BaseException;
+import com.kidsnara.library.domain.user.User;
+import com.kidsnara.library.dto.user.UserJoinResponse;
+import com.kidsnara.library.repository.UserRepository;
 import com.kidsnara.library.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +30,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User saveOrUpdateUser(User user) {
+    public UserJoinResponse saveOrUpdateUser(User user) {
+        if(userRepository.existsByEmail(user.getEmail())){
+            throw new BaseException(BaseErrorResult.DUPLICATED_USER_REGISTER);
+        }
         user.encodePassword(this.passwordEncoder);
+        User savedUser = this.userRepository.save(user);
 
-        return this.userRepository.save(user);
+        return UserJoinResponse.builder()
+                .userId(savedUser.getId())
+                .email(savedUser.getEmail())
+                .role(savedUser.getRole())
+                .build();
     }
 }
