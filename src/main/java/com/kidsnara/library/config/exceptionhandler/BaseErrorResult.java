@@ -11,8 +11,10 @@ public enum BaseErrorResult implements ErrorCode{
     UNKNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, 2000,"Unknown Exception"),
     EMPTY_JWT(HttpStatus.BAD_REQUEST, 2001,"JWT를 입력해주세요."),
     INVALID_JWT(HttpStatus.BAD_REQUEST, 2002,"유효한 JWT가 아닙니다."),
-    DUPLICATED_BOOK_REGISTER(HttpStatus.BAD_REQUEST, 2004, "Duplicated Book Register Request"),
-    BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, 2005, "Book not found"),
+    NO_PERMISSION(HttpStatus.UNAUTHORIZED, 2004, "권한이 없습니다."),
+    DUPLICATED_USER_REGISTER(HttpStatus.BAD_REQUEST, 2005, "Duplicated User Register Request"),
+    DUPLICATED_BOOK_REGISTER(HttpStatus.BAD_REQUEST, 2006, "Duplicated Book Register Request"),
+    BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, 2007, "Book not found"),
     ;
 
     private final HttpStatus httpStatus;
