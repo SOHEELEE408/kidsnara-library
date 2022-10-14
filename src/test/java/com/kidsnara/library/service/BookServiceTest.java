@@ -202,4 +202,30 @@ class BookServiceTest {
         // then
         assertThat(result.getTitle()).isEqualTo("책 이름");
     }
+
+    @Test
+    void 도서삭제실패_존재하지않음() {
+        // given
+        doReturn(Optional.empty()).when(repository).findById(id);
+
+        // when
+        final BaseException result = assertThrows(BaseException.class, ()-> bookService.deleteBook(id));
+
+        // then
+        assertThat(result.getErrorResult()).isEqualTo(BaseErrorResult.BOOK_NOT_FOUND);
+    }
+
+
+    @Test
+    void 도서삭제성공() {
+        // given
+        final Book book = book();
+        doReturn(Optional.of(book)).when(repository).findById(id);
+
+        // when
+        bookService.deleteBook(id);
+
+        // then
+
+    }
 }

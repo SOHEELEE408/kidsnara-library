@@ -1,14 +1,19 @@
 package com.kidsnara.library.repository;
 
+import com.kidsnara.library.constant.Role;
 import com.kidsnara.library.domain.library.Book;
+import com.kidsnara.library.domain.user.User;
 import com.kidsnara.library.dto.book.BookGetRes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -103,5 +108,58 @@ public class BookRepositoryTest {
 
         // then
         assertThat(result.getNumberOfElements()).isEqualTo(2);
+    }
+
+    @Test
+    void 도서추가후삭제() {
+
+        // given
+        final Book book = Book.builder()
+                .isbn("8888")
+                .title("책 이름")
+                .author("작가명")
+                .publisher("출판사")
+                .price(10000)
+                .count(1)
+                .genre("문학")
+                .build();
+
+        final Book savedBook = bookRepository.save(book);
+
+        // when
+        bookRepository.deleteById(savedBook.getId());
+
+        // then
+
+    }
+
+    @SpringBootTest
+    static
+    class UserRepositoryTest {
+
+        @Autowired
+        UserRepository memberRepository;
+
+        @DisplayName("유저 등록")
+        @Test
+        void memberInsertTest() {
+            // given
+            memberRepository.save(
+                    User.builder()
+                            .username("김이름")
+                            .email("test@email.com")
+                            .password("1234")
+                            .role(Role.USER)
+                            .build()
+            );
+
+            // when
+            List<User> users = memberRepository.findAll();
+
+            // then
+            assertThat(users.get(0).getUsername()).isEqualTo("김이름");
+            assertThat(users.get(0).getRole()).isEqualTo(Role.USER);
+        }
+
     }
 }

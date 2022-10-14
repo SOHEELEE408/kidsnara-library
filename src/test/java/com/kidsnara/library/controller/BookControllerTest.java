@@ -1,6 +1,5 @@
 package com.kidsnara.library.controller;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.Gson;
 import com.kidsnara.library.config.exceptionhandler.BaseErrorResult;
 import com.kidsnara.library.config.exceptionhandler.BaseException;
@@ -10,7 +9,9 @@ import com.kidsnara.library.dto.book.BookDetailRes;
 import com.kidsnara.library.dto.book.BookGetRes;
 import com.kidsnara.library.dto.book.BookRegisterReq;
 import com.kidsnara.library.dto.book.BookRegisterRes;
+import com.kidsnara.library.dto.user.AccountDto;
 import com.kidsnara.library.repository.BookRepository;
+import com.kidsnara.library.security.jwt.JwtDecoder;
 import com.kidsnara.library.service.BookService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
@@ -34,16 +34,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.kidsnara.library.constant.BookConstants.ACCESS_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,6 +52,9 @@ class BookControllerTest {
 
     @Spy
     private BookRepository bookRepository;
+
+    @Spy
+    private JwtDecoder jwtDecoder;
 
     @InjectMocks
     private BookController bookController;
@@ -344,6 +343,62 @@ class BookControllerTest {
 
         // then
         resultActions.andExpect(status().isOk());
+
+    }
+
+    @Test
+    void 도서삭제실패_토큰이헤더에없음() throws Exception{
+        // given
+        final String url = "/books/-1";
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.delete(url)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void 도서삭제실패_권한없음() throws Exception {
+        // given
+        final String url = "/books/-1";
+        AccountDto accountDto = AccountDto.builder()
+                        .email("test@email.com")
+                        .role("ROLE_USER")
+                        .build();
+        doReturn(accountDto).when(jwtDecoder).decodeJwt(anyString());
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.delete(url)
+                        .header(ACCESS_TOKEN, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJVU0VSX0VNQUlMIjoidGVzdEBlbWFpbC5jb20iLCJpc3MiOiJraWRzbmFyYSIsIlVTRVJfUk9MRSI6IlJPTEVfQURNSU4iLCJleHAiOjE2NjUyMTg4OTF9.3VdOJ7cE2Sxx5liFWLCNfp8sIlbglNmckfpk2dByUrM")
+        );
+
+        // then
+        resultActions.andExpect(status().isUnauthorized());
+
+    }
+
+    @Test
+    void 도서삭제성공() throws Exception{
+        // given
+        final String url = "/books/-1";
+        AccountDto accountDto = AccountDto.builder()
+                .email("test22@email.com")
+                .role("ROLE_ADMIN")
+                .build();
+        doReturn(accountDto).when(jwtDecoder).decodeJwt(anyString());
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.delete(url)
+                        .header(ACCESS_TOKEN, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJVU0VSX0VNQUlMIjoidGVzdDIyQGVtYWlsLmNvbSIsImlzcyI6ImtpZHNuYXJhIiwiVVNFUl9ST0xFIjoiUk9MRV9BRE1JTiIsImV4cCI6MTY2NTIzMzE3NH0.hz1pegxYQ7kneLpaTmZxuqmuQF5y8UfeaRVsrcdE3pc")
+        );
+
+        // then
+        resultActions.andExpect(status().isNoContent());
 
     }
 }
