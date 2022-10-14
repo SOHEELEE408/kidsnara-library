@@ -59,4 +59,11 @@ public class BookService {
                 .genre(book.getGenre())
                 .build();
     }
+
+    @Transactional
+    public void deleteBook(Long bookId) {
+        repository.findById(bookId).orElseThrow(() -> new BaseException(BaseErrorResult.BOOK_NOT_FOUND));
+
+        repository.deleteById(bookId);
+    }
 }
