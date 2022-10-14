@@ -1,6 +1,6 @@
 package com.kidsnara.library.config.security;
 
-import com.kidsnara.library.security.filter.ExceptionHandlerFilter;
+import com.kidsnara.library.security.filter.JwtExceptionHandlerFilter;
 import com.kidsnara.library.security.common.FilterSkipMatcher;
 import com.kidsnara.library.security.filter.FormLoginFilter;
 import com.kidsnara.library.security.filter.JwtAuthenticationFilter;
@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final FormLoginAuthenticationSuccessHandler formLoginAuthenticationSuccessHandler;
     private final FormLoginAuthenticationFailureHandler formLoginAuthenticationFailureHandler;
 
-    private final ExceptionHandlerFilter exceptionHandlerFilter;
+    private final JwtExceptionHandlerFilter jwtExceptionHandlerFilter;
     private final JWTAuthenticationProvider jwtProvider;
     private final HeaderTokenExtractor headerTokenExtractor;
 
@@ -75,12 +75,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         UsernamePasswordAuthenticationFilter.class
                 )
                 .addFilterBefore(
-                        exceptionHandlerFilter,
+                        jwtFilter(),
                         UsernamePasswordAuthenticationFilter.class
                 )
                 .addFilterBefore(
-                        jwtFilter(),
-                        UsernamePasswordAuthenticationFilter.class
+                        jwtExceptionHandlerFilter,
+                        JwtAuthenticationFilter.class
                 );
 
         http
@@ -89,7 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         HttpMethod.POST,
                         "/books"
                 )
-                .hasRole("USER");
+                .hasRole("ADMIN");
         http
                 .cors(withDefaults());
     }
@@ -102,6 +102,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         skipPath.add(new AntPathRequestMatcher("/static", HttpMethod.GET.name()));
         skipPath.add(new AntPathRequestMatcher("/static/**", HttpMethod.GET.name()));
         skipPath.add(new AntPathRequestMatcher("/books", HttpMethod.GET.name()));
+        skipPath.add(new AntPathRequestMatcher("/users/**", HttpMethod.POST.name()));
 
         FilterSkipMatcher matcher = new FilterSkipMatcher(
                 skipPath,
