@@ -1,6 +1,8 @@
 package com.kidsnara.library.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kidsnara.library.config.exceptionhandler.BaseErrorResult;
+import com.kidsnara.library.config.exceptionhandler.BaseException;
 import com.kidsnara.library.dto.user.LogInRequest;
 import com.kidsnara.library.security.token.PreAuthorizationToken;
 import org.springframework.security.core.Authentication;
@@ -47,6 +49,14 @@ public class FormLoginFilter extends AbstractAuthenticationProcessingFilter {
                 request.getReader(),
                 LogInRequest.class
         );
+
+        if(dto.getEmail() == null){
+            throw new BaseException(BaseErrorResult.EMPTY_EMAIL);
+        }
+
+        if(dto.getPassword() == null){
+            throw new BaseException(BaseErrorResult.EMPTY_PASSWORD);
+        }
 
         // 사용자 입력값 존재 확인
         PreAuthorizationToken token = new PreAuthorizationToken(dto);

@@ -1,5 +1,7 @@
 package com.kidsnara.library.security.provider;
 
+import com.kidsnara.library.config.exceptionhandler.BaseErrorResult;
+import com.kidsnara.library.config.exceptionhandler.BaseException;
 import com.kidsnara.library.service.UserServiceImpl;
 import com.kidsnara.library.security.CustomUserDetails;
 import com.kidsnara.library.security.token.PostAuthorizationToken;
@@ -38,7 +40,7 @@ public class FormLoginAuthenticationProvider implements AuthenticationProvider {
                     .getTokenFormUserDetails(userDetails);
         }
 
-        throw new NoSuchElementException("인증 정보가 정확하지 않습니다.");
+        throw new BaseException(BaseErrorResult.INCORRECT_ACCOUNT);
     }
 
     /*
