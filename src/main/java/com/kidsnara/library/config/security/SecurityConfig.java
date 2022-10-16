@@ -19,6 +19,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +68,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .frameOptions()
                 .disable();
         http
+                .cors().configurationSource(request -> {
+                    var cors = new CorsConfiguration();
+                    cors.setAllowedOrigins(List.of("http://localhost:8080"));
+                    cors.setAllowedMethods(List.of("GET","POST", "PUT", "DELETE", "OPTIONS"));
+                    cors.setAllowedHeaders(List.of("*"));
+                    return cors;
+                });
+
+        http
+                .authorizeRequests()
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll();
+
+        http
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -90,8 +105,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/books"
                 )
                 .hasRole("ADMIN");
-        http
-                .cors(withDefaults());
     }
 
     private JwtAuthenticationFilter jwtFilter() throws Exception{
@@ -102,7 +115,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         skipPath.add(new AntPathRequestMatcher("/static", HttpMethod.GET.name()));
         skipPath.add(new AntPathRequestMatcher("/static/**", HttpMethod.GET.name()));
         skipPath.add(new AntPathRequestMatcher("/books", HttpMethod.GET.name()));
-        skipPath.add(new AntPathRequestMatcher("/users/**", HttpMethod.POST.name()));
+        skipPath.add(new AntPathRequestMatcher("/users", HttpMethod.POST.name()));
 
         FilterSkipMatcher matcher = new FilterSkipMatcher(
                 skipPath,
