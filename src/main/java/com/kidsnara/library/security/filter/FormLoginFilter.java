@@ -50,11 +50,11 @@ public class FormLoginFilter extends AbstractAuthenticationProcessingFilter {
                 LogInRequest.class
         );
 
-        if(dto.getEmail() == null){
+        if(dto.getEmail() == null || dto.getEmail().equals("")){
             throw new BaseException(BaseErrorResult.EMPTY_EMAIL);
         }
 
-        if(dto.getPassword() == null){
+        if(dto.getPassword() == null || dto.getPassword().equals("")){
             throw new BaseException(BaseErrorResult.EMPTY_PASSWORD);
         }
 
