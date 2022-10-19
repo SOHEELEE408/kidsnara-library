@@ -1,9 +1,13 @@
 <template>
     <component :is="currentMenu" :right="side === 'right' ? true: false">
-      <a href="/login">
+      <div v-if="loginState == null" class="menu-login" @click="login">
         <i class="fa fa-fw fa-star-o"></i>
         <span>Login</span>
-      </a>
+      </div>
+      <div v-else class="menu-login" @click="logout">
+        <i class="fa fa-fw fa-star-o"></i>
+        <span>Logout</span>
+      </div>
       <a href="/books">
         <i class="fa fa-fw fa-bell-o"></i>
         <span>도서 목록</span>
@@ -31,7 +35,8 @@ export default {
         slide: { buttonText: 'Slide' },
       },
       side: 'left',
-      currentMenu: 'slide'
+      currentMenu: 'slide',
+      loginState: localStorage.getItem('token')
     };
   },
   components: {
@@ -39,12 +44,15 @@ export default {
     slide
   },
   methods: {
-    changeMenu(menu) {
-      this.currentMenu = menu.replace(/ +/g, '').toLowerCase();
-      return this.currentMenu;
-    },
     changeSide(side) {
       this.side = side;
+    },
+    login() {
+      this.$router.push('/login')
+    },
+    logout() {
+      localStorage.removeItem('token')
+      this.$router.push('/login')
     }
   }
 }
@@ -71,6 +79,16 @@ body {
   height: 100%;
 }
 a {
+  color: #4e4a46;
+  text-decoration: none;
+  &:hover,
+  &:focus {
+    color: #c94e50;
+  }
+}
+
+.menu-login {
+  cursor: pointer;
   color: #4e4a46;
   text-decoration: none;
   &:hover,
