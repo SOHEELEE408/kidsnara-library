@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.kidsnara.library.config.exceptionhandler.GlobalExceptionHandler;
 import com.kidsnara.library.constant.Role;
 import com.kidsnara.library.domain.user.User;
+import com.kidsnara.library.dto.user.LogInRequest;
 import com.kidsnara.library.dto.user.UserJoinRequest;
 import com.kidsnara.library.dto.user.UserJoinResponse;
+import com.kidsnara.library.security.CustomUserDetails;
 import com.kidsnara.library.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.ArgumentMatchers.any;
@@ -108,5 +111,28 @@ class UserControllerTest {
 
         assertThat(res.getEmail()).isEqualTo("test222@email.com");
         assertThat(res.getUserId()).isNotZero();
+    }
+
+    @Test
+    void 로그인() throws Exception {
+        // given
+        final String url = "/users/login";
+        final User response = new User(7L, "새가입", "new@email.com", "{bcrypt}$2a$10$3SBb83VTTkm.kvxgrcpZse8Ob1wGQWySV1LbL/lxDC8zzJBqTKXX.", Role.USER);
+
+        doReturn(new CustomUserDetails(response)).when(userService).loadUserByUsername(anyString());
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post(url)
+                        .content(gson.toJson(logInRequest("new@email.com", "1234")))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isCreated());
+    }
+
+    private LogInRequest logInRequest(String email, String password){
+        return new LogInRequest(email, password);
     }
 }
