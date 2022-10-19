@@ -7,6 +7,11 @@ const routes = [
         component: () => import('@/views/Login'), // 동적 import
     },
     {
+        path: '/join',
+        name: 'Join',
+        component: () => import('@/views/Join'), // 동적 import
+    },
+    {
         path: '/',
         redirect: '/books',
         name: 'TheContainer',
