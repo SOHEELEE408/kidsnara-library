@@ -1,5 +1,5 @@
 <template>
-  <div class="container" id="content">
+  <div class="login-container" id="login-content">
     <form @submit.prevent="login">
       <h2 class="mb-3">로그인</h2>
       <div class="input">
@@ -49,11 +49,12 @@
 import axios from "axios";
 
 export default {
-  name: "Login2",
+  name: "Login",
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
+      token: ""
     };
   },
   methods: {
@@ -67,10 +68,12 @@ export default {
       }
       this.axios.post('http://localhost:8081/users/login',
           JSON.stringify(params),
-          {headers:{'content-type':'application/json'}}
+          {headers:{'Content-type':'application/json'}}
       )
       .then(res => {
-        alert(res.data.token);
+        this.token = res.data.token
+        localStorage.setItem('token', this.token)
+        alert(localStorage.getItem('token'))
         this.$router.push("/books");
       })
       .catch((error) => {
@@ -86,13 +89,13 @@ export default {
     },
 
     moveToRegister() {
-      this.$router.push("/register");
+      this.$router.push("/join");
     },
   },
 };
 </script>
 <style>
-#content {
+#login-content {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -102,35 +105,8 @@ export default {
   border-radius: 5px;
   background: #fefefe;
 }
-.background {
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  background: rgb(250, 250, 250);
-}
-.navbar {
-  background: #fafafa;
-  position: absolute;
-  top: 0;
-  width: 100vw;
-  height: 70px;
-  box-shadow: 6.7px 6.7px 5.3px rgba(0, 0, 0, 0.028),
-  22.3px 22.3px 17.9px rgba(0, 0, 0, 0.042),
-  100px 100px 80px rgba(0, 0, 0, 0.07);
-}
-.nav {
-  width: 80%;
-  min-width: 400px;
-  margin: auto;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  background: #fafafa;
-}
-#name_project {
-  font-weight: 700;
-}
-.container {
+
+.login-container {
   width: 400px;
   max-width: 95%;
 }
@@ -182,9 +158,5 @@ export default {
   color: #0d6efd;
   cursor: pointer;
 }
-#sign_out {
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-}
+
 </style>
