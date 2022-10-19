@@ -14,17 +14,17 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 public class UserJoinRequest {
 
-    @NotNull(message = "이름을 입력해주세요.")
+    @NotBlank(message = "이름을 입력해주세요.")
     private String username;
 
-    @NotNull(message = "이메일을 입력해주세요.")
+    @NotBlank(message = "이메일을 입력해주세요.")
     @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", message = "이메일 형식으로 입력해주세요.")
     private String email;
 
-    @NotNull(message = "비밀번호를 입력해주세요.")
+    @NotBlank(message = "비밀번호를 입력해주세요.")
     private String password;
 
-    @NotNull(message = "권한을 선택해주세요.")
+    @NotBlank(message = "권한을 선택해주세요.")
     private String role;
 
     @Builder
