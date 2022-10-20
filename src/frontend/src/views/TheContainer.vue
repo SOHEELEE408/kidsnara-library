@@ -12,7 +12,7 @@
         <i class="fa fa-fw fa-bell-o"></i>
         <span>도서 목록</span>
       </a>
-      <a href="/books/register/barcode">
+      <a href="/books/regist/barcode">
         <i class="fa fa-fw fa-envelope-o"></i>
         <span>도서 등록</span>
       </a>
