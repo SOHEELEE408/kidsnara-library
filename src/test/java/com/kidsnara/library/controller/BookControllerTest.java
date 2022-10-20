@@ -23,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -281,7 +282,7 @@ class BookControllerTest {
     void 도서목록전체조회성공() throws Exception {
         // given
         final String url = "/books";
-        Slice<BookGetRes> bookGetRes = bookRepository.findBookGetRes(PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "title")));
+        Page<BookGetRes> bookGetRes = bookRepository.findBookGetRes(PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "title")));
         doReturn(bookGetRes).when(bookService).getBookList(0);
 
         // when

@@ -12,10 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -94,17 +91,27 @@ class BookServiceTest {
         doReturn(bookGetRes()).when(repository).findBookGetRes(pageRequest);
 
         // when
-        final Slice<BookGetRes> result = bookService.getBookList(0);
+        final Page<BookGetRes> result = bookService.getBookList(0);
 
         // then
         assertThat(result.getNumberOfElements()).isEqualTo(3);
 
     }
 
-    private Slice<BookGetRes> bookGetRes(){
-        return new Slice<BookGetRes>() {
+    private Page<BookGetRes> bookGetRes(){
+        return new Page<>() {
             @Override
-            public Iterator<BookGetRes> iterator() {
+            public int getTotalPages() {
+                return 0;
+            }
+
+            @Override
+            public long getTotalElements() {
+                return 3;
+            }
+
+            @Override
+            public <U> Page<U> map(Function<? super BookGetRes, ? extends U> converter) {
                 return null;
             }
 
@@ -115,7 +122,7 @@ class BookServiceTest {
 
             @Override
             public int getSize() {
-                return 20;
+                return 0;
             }
 
             @Override
@@ -125,11 +132,7 @@ class BookServiceTest {
 
             @Override
             public List<BookGetRes> getContent() {
-                return Arrays.asList(
-                        BookGetRes.builder().build(),
-                        BookGetRes.builder().build(),
-                        BookGetRes.builder().build()
-                );
+                return null;
             }
 
             @Override
@@ -173,7 +176,7 @@ class BookServiceTest {
             }
 
             @Override
-            public <U> Slice<U> map(Function<? super BookGetRes, ? extends U> converter) {
+            public Iterator<BookGetRes> iterator() {
                 return null;
             }
         };

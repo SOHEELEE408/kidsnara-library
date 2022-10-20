@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -78,7 +79,7 @@ public class BookRepositoryTest {
         PageRequest pageRequest = PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "title"));
 
         // when
-        Slice<BookGetRes> result = bookRepository.findBookGetRes(pageRequest);
+        Page<BookGetRes> result = bookRepository.findBookGetRes(pageRequest);
         
         // then
         assertThat(result.getNumberOfElements()).isEqualTo(0);
@@ -104,7 +105,7 @@ public class BookRepositoryTest {
         PageRequest pageRequest = PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "title"));
 
         // when
-        Slice<BookGetRes> result = bookRepository.findBookGetRes(pageRequest);
+        Page<BookGetRes> result = bookRepository.findBookGetRes(pageRequest);
 
         // then
         assertThat(result.getNumberOfElements()).isEqualTo(2);
