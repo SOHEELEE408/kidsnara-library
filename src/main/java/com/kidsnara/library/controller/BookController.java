@@ -4,17 +4,14 @@ import com.kidsnara.library.config.exceptionhandler.BaseErrorResult;
 import com.kidsnara.library.config.exceptionhandler.BaseException;
 import com.kidsnara.library.config.naver.NaverClient;
 import com.kidsnara.library.domain.library.Book;
-import com.kidsnara.library.dto.book.BookDetailRes;
-import com.kidsnara.library.dto.book.BookGetRes;
-import com.kidsnara.library.dto.book.BookRegisterReq;
-import com.kidsnara.library.dto.book.BookRegisterRes;
+import com.kidsnara.library.dto.book.*;
 import com.kidsnara.library.dto.naver.SearchBookReq;
 import com.kidsnara.library.dto.naver.SearchBookRes;
 import com.kidsnara.library.dto.user.AccountDto;
 import com.kidsnara.library.security.jwt.JwtDecoder;
 import com.kidsnara.library.service.BookService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +39,7 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<BookRegisterRes> saveBook(
-            @RequestHeader(ACCESS_TOKEN) final String token,
+            @RequestHeader(name = ACCESS_TOKEN) final String token,
             @RequestBody @Valid final BookRegisterReq bookReq) {
 
         Book book = Book.builder()
@@ -62,8 +59,8 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<Slice<BookGetRes>> getBookList(
-            @RequestHeader(ACCESS_TOKEN) final String token,
+    public ResponseEntity<Page<BookGetRes>> getBookList(
+            @RequestHeader(name = ACCESS_TOKEN) final String token,
             @RequestParam(name = "page", defaultValue = "0") final int page
     ){
         return ResponseEntity.ok(bookService.getBookList(page));
@@ -71,15 +68,31 @@ public class BookController {
 
     @GetMapping("/{bookId}")
     public ResponseEntity<BookDetailRes> getBook(
-            @RequestHeader(ACCESS_TOKEN) final String token,
+            @RequestHeader(name = ACCESS_TOKEN) final String token,
             @PathVariable final Long bookId
     ){
         return ResponseEntity.ok(bookService.getBook(bookId));
     }
 
+    @PatchMapping("/{bookId}")
+    public ResponseEntity<Void> updateBook(
+            @RequestHeader(name = ACCESS_TOKEN) final String token,
+            @RequestBody final BookPatchReq patchBookReq,
+            @PathVariable final Long bookId
+    ) {
+        AccountDto accountDto = jwtDecoder.decodeJwt(token);
+        if(!accountDto.getRole().equals("ROLE_ADMIN")){
+            throw new BaseException(BaseErrorResult.NO_PERMISSION);
+        }
+
+        patchBookReq.setBookId(bookId);
+        bookService.updateBook(patchBookReq);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{bookId}")
     public ResponseEntity<Void> deleteBook(
-            @RequestHeader(ACCESS_TOKEN) final String token,
+            @RequestHeader(name = ACCESS_TOKEN) final String token,
             @PathVariable final Long bookId
     ){
         AccountDto accountDto = jwtDecoder.decodeJwt(token);

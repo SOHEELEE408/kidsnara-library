@@ -5,11 +5,12 @@ import com.kidsnara.library.config.exceptionhandler.BaseException;
 import com.kidsnara.library.domain.library.Book;
 import com.kidsnara.library.dto.book.BookDetailRes;
 import com.kidsnara.library.dto.book.BookGetRes;
+import com.kidsnara.library.dto.book.BookPatchReq;
 import com.kidsnara.library.dto.book.BookRegisterRes;
 import com.kidsnara.library.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,9 +38,9 @@ public class BookService {
                 .build();
     }
 
-    public Slice<BookGetRes> getBookList(int page){
-        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "title"));
-        Slice<BookGetRes> bookGetRes = repository.findBookGetRes(pageRequest);
+    public Page<BookGetRes> getBookList(int page){
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "title"));
+        Page<BookGetRes> bookGetRes = repository.findBookGetRes(pageRequest);
 
         return bookGetRes;
     }
@@ -55,7 +56,7 @@ public class BookService {
                 .publisher(book.getPublisher())
                 .price(book.getPrice())
                 .count(book.getCount())
-                .count(book.getPossibleCnt())
+                .possibleCnt(book.getPossibleCnt())
                 .genre(book.getGenre())
                 .build();
     }
@@ -65,5 +66,11 @@ public class BookService {
         repository.findById(bookId).orElseThrow(() -> new BaseException(BaseErrorResult.BOOK_NOT_FOUND));
 
         repository.deleteById(bookId);
+    }
+
+    @Transactional
+    public void updateBook(BookPatchReq patchBookReq) {
+        Book findBook = repository.findById(patchBookReq.getBookId()).orElseThrow(() -> new BaseException(BaseErrorResult.BOOK_NOT_FOUND));
+        findBook.updateBook(patchBookReq.getCount(), patchBookReq.getGenre());
     }
 }

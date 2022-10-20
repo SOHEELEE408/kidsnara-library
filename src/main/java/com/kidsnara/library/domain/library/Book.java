@@ -5,9 +5,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -33,16 +33,22 @@ public class Book extends BaseEntity {
 
     private int price;
 
-    @Column(columnDefinition = "int default 1")
+    @ColumnDefault(value = "1")
     private int count;
 
     @Column(name = "possible_cnt")
+    @ColumnDefault(value = "1")
     private int possibleCnt;
 
-    @Column(columnDefinition = "varchar(20) default 'registered'")
+    @ColumnDefault(value = "'registered'")
     private String status;
 
     private String genre;
+
+    public void updateBook(int count, String genre){
+        this.count = count;
+        this.genre = genre;
+    }
 
     @Builder
     public Book(Long id, String isbn, String title, String author, String publisher, int price, int count, String genre){
