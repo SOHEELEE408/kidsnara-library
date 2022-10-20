@@ -1,8 +1,8 @@
 <template>
   <div class="main-header">
     <div class="navbar navbar-dark bg-dark shadow-sm mb-3">
-      <div class="container d-flex justify-content-between">
-        <a href="#" class="navbar-brand d-flex align-items-right">
+      <div id="main-logo" class="container d-flex justify-content-between">
+        <a href="#" class="navbar-brand d-flex align-items-right" style="margin-left: 100px">
           <strong class="text-right">Kidsnara Library</strong>
         </a>
       </div>

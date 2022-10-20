@@ -5,13 +5,13 @@
         <slot></slot>
       </nav>
       <span class="bm-cross-button cross-style" @click="closeMenu" :class="{ hidden: !crossIcon }">
-                <span v-for="(x, index) in 2" :key="x" class="bm-cross" :style="{ position: 'absolute', width: '3px', height: '14px',transform: index === 1 ? 'rotate(45deg)' : 'rotate(-45deg)'}">
+                <span v-for="(x, index) in 2" :key="x" class="bm-cross" :style="{ position: 'absolute', width: '3px', height: '14px', transform: index === 1 ? 'rotate(45deg)' : 'rotate(-45deg)'}">
                 </span>
             </span>
     </div>
 
     <div ref="bmBurgerButton" class="bm-burger-button" @click="openMenu" :class="{ hidden: !burgerIcon }">
-      <span class="bm-burger-bars line-style" :style="{top:20 * (index * 2) + '%'}" v-for="(x, index) in 3" :key="index"></span>
+      <span class="bm-burger-bars line-style" :style="{top:20 * (index * 2) + '%'}" v-for="(x, index) in 3" :key="index" style="background-color: white"></span>
     </div>
 
   </div>
@@ -209,12 +209,14 @@ html {
   left: 36px;
   top: 36px;
   cursor: pointer;
+  margin-top: -20px;
+  z-index: 1;
 }
 .bm-burger-button.hidden {
   display: none;
 }
 .bm-burger-bars {
-  background-color: #373a47;
+  background-color: white;
 }
 .line-style {
   position: absolute;
