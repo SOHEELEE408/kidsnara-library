@@ -17,6 +17,7 @@
 import { ref } from "vue";
 import { StreamBarcodeReader } from "vue-barcode-reader";
 import axios from "axios";
+
 const decodedText = ref("");
 const onLoaded = () => {
   console.log("loaded");
@@ -33,17 +34,18 @@ const searchData = (decodedText) => {
           isbn: decodedText
         },
         headers: {
-          'X-ACCESS-TOKEN': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJVU0VSX0VNQUlMIjoidGVzdEBlbWFpbC5jb20iLCJpc3MiOiJraWRzbmFyYSIsIlVTRVJfUk9MRSI6IlJPTEVfVVNFUiIsImV4cCI6MTY2NTc0MDgyMH0.Kk3fy-aVkuUTmL4OdSNA3fs9_GJGjvS96KE9dRQ7-2Y'
+          'X-ACCESS-TOKEN': localStorage.getItem('token')
         }
       }
   )
   .then(res => {
-    alert(res)
-    this.$emitter.on("searchData", res)
-    this.$router.push('BookReg')
-  }).catch(
-      e => { alert(e)}
-  )
+    console.log(res.data.items[0])
+    localStorage.setItem('newBook', JSON.stringify(res.data.items[0]))
+    window.location.replace('/books/regist');
+  })
+  .catch((error) => {
+    alert(error.response);
+  })
 }
 </script>
 
