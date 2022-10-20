@@ -59,7 +59,16 @@ export default {
       token: ""
     };
   },
+  mounted() {
+    this.loginCheck()
+  },
   methods: {
+    loginCheck(){
+      if(localStorage.getItem('token') !== null){
+        console.log(localStorage.getItem('token'))
+        this.$router.push("/books")
+      }
+    },
     login(submitEvent) {
 
       let params = {
