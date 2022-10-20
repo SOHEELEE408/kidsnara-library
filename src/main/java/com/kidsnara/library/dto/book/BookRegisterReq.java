@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Builder
@@ -13,22 +13,22 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor(force = true)
 public class BookRegisterReq {
 
-    @NotNull
+    @NotBlank(message = "isbn을 입력하세요")
     private String isbn;
 
-    @NotNull
+    @NotBlank(message = "도서명을 입력하세요")
     private String title;
 
-    @NotNull
+    @NotBlank(message = "작가명을 입력하세요")
     private String author;
 
-    @NotNull
+    @NotBlank(message = "출판사를 입력하세요")
     private String publisher;
 
     private int price;
     private int count;
 
-    @NotNull
+    @NotBlank(message = "장르를 입력하세요")
     private String genre;
 
 }
