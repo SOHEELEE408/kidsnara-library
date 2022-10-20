@@ -1,43 +1,33 @@
 <template>
   <div class="container">
-    <div class="card" >
+    <div class="card">
       <div class="card-body">
-        <LibraryTable :list="list"
+        <BookTable :list="list"
                :cnt="totalCnt"
-               :getData="getPosts"
-               :id="LibraryTable">
+               :getData="getPosts">
           <template v-slot:header>
-            <th>Vol.</th>
+            <th>vol.</th>
             <th>도서명</th>
-            <th>작가</th>
-            <th>대여</th>
+            <th>작가명</th>
+            <th>대여 가능 수</th>
             <th class="text-center">비고</th>
           </template>
           <template v-slot:default="slotProps">
-            <td>{{slotProps.row.id}}</td>
+            <td>{{slotProps.row.bookId}}</td>
             <td>{{slotProps.row.title}}</td>
             <td>{{slotProps.row.author}}</td>
-            <td>{{slotProps.row.createdDate}}</td>
+            <td>{{slotProps.row.possibleCount}}</td>
             <td class="text-center">
               <router-link :to="{
-                  path:'/posts/detail',
-                  query:{id:slotProps.row.id}
+                  name:'BookDetail',
+                  params: {bookId: slotProps.row.bookId }
                  }"
                            class="btn btn-sm btn-primary">
                 🔎
               </router-link>
             </td>
           </template>
-        </LibraryTable>
-      </div>
-    </div>
-
-    <div class="row mt-3 float-right">
-      <div class="col-auto">
-        <router-link :to="{path:'/posts/reg'}"
-                     class="btn btn-primary">
-          <i class="fa fa-plus">등록</i>
-        </router-link>
+        </BookTable>
       </div>
     </div>
 
@@ -45,11 +35,10 @@
 </template>
 
 <script>
-import LibraryTable from "@/components/layout/BookTable";
-
+import BookTable from "@/components/layout/BookTable";
 export default {
   name: "Books",
-  components:{LibraryTable},
+  components:{BookTable},
   data(){
     return{
       posts:[],
@@ -65,21 +54,31 @@ export default {
     }
   },
   mounted(){
+    this.loginCheck()
     this.handleService()
   },
   methods:{
+    loginCheck(){
+      if(localStorage.getItem('token') === null){
+        console.log(localStorage.getItem('token'))
+        this.$router.push("/login")
+      }
+    },
     handleService(){
       var params = new URLSearchParams()
-      params.append("page",1)
+      params.append("page",0)
       this.getPosts(params)
     },
     getPosts(params){
-      this.axios.get("http://localhost:8081/books?"+params)  // 게시글: this.axios.get("http://127.0.0.1:8080/posts?" + params)
-      .then(res=>{
-        this.posts=res.data.content
-        this.cnt=res.data.totalElements
-      }).catch(e=>{
-        alert(e)
+      this.axios.get("http://localhost:8081/books?"+params,
+          {headers: { 'X-ACCESS-TOKEN': localStorage.getItem('token')}}
+      )
+          .then(res=>{
+            this.posts=res.data.content
+            console.log(res.data)
+            this.cnt=res.data.totalElements
+          }).catch(e=>{
+            console.log(e)
       })
     },
   }
@@ -87,5 +86,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

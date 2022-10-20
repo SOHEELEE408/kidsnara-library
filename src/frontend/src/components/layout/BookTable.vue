@@ -2,19 +2,19 @@
   <div class="table-scrollable white-background">
     <table class="table table-striped table-bordered table-hover">
       <thead>
-        <tr class="heading">
-          <slot name="header"/>
-        </tr>
+      <tr class="heading">
+        <slot name="header"/>
+      </tr>
       </thead>
       <tbody>
-        <template v-for="(row, index) in list" :key="index">
-          <tr>
-            <slot v-bind:row="row"/>
-          </tr>
-        </template>
-        <tr v-if="list.length===0">
-          <td colspan="30" class="text-center">데이터가 존재하지 않습니다.</td>
+      <template v-for="(row, index) in list" :key="index">
+        <tr>
+          <slot v-bind:row="row"/>
         </tr>
+      </template>
+      <tr v-if="list.length===0">
+        <td colspan="30" class="text-center">데이터가 존재하지 않습니다.</td>
+      </tr>
       </tbody>
     </table>
   </div>
@@ -22,7 +22,7 @@
       v-model="page"
       :records="count"
       :per-page="10"
-      @paginate="pagingHandle"
+      @paginate="pagingHandle(this.page)"
   />
 </template>
 
@@ -30,7 +30,7 @@
 import Pagination from 'v-pagination-3'
 export default {
   components:{Pagination},
-  name: "LibraryTable",
+  name: "BookTable",
   props: ['list', 'cnt', 'getData'],
   data(){
     return {
@@ -46,7 +46,7 @@ export default {
   methods:{
     pagingHandle(page){
       const params=new URLSearchParams()
-      params.append("page", page)
+      params.append("page", page-1)
       this.getData(params)
     }
   }
@@ -54,5 +54,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
