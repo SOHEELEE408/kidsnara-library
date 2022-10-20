@@ -23,7 +23,7 @@ const routes = [
                 component: () => import('@/components/posts/Books'),
             },
             {
-                path: '/books/detail',
+                path: '/books/detail/:bookId',
                 name: 'BookDetail',
                 component: () => import('@/components/posts/BookDetail'),
             },
